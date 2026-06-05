@@ -2,24 +2,25 @@
 //  Zentrale Konfiguration
 // ============================================================
 //
-//  Diese Umfrage funktioniert OHNE Backend/Server.
-//  Alle Antworten werden lokal im Browser gespeichert
-//  (localStorage) und können auf der Admin-Seite als Excel
-//  oder CSV exportiert werden.
+//  Die Antworten werden zentral in einer Supabase-Datenbank
+//  gesammelt (kostenlos). So können Besucher die Umfrage auf
+//  ihrem EIGENEN Handy ausfüllen und alle Antworten laufen an
+//  einer Stelle zusammen.
 //
-//  WICHTIG: Die Daten liegen nur auf dem GERÄT, auf dem die
-//  Umfrage ausgefüllt wird. Betreiben Sie die Umfrage daher
-//  an einem gemeinsamen Gerät (Tablet/Laptop am Stand).
+//  EINRICHTUNG (einmalig, siehe README.md → Schritt 2):
+//  1. Gratis-Projekt auf supabase.com erstellen.
+//  2. Den Inhalt von supabase-setup.sql im SQL-Editor ausführen.
+//  3. Unten die beiden Werte eintragen:
+//       - SUPABASE_URL       (Project URL)
+//       - SUPABASE_ANON_KEY  (anon / publishable key)
 //
 // ============================================================
 
-// Schlüssel, unter dem die Antworten im Browser gespeichert werden
-const STORAGE_KEY = 'mf_umfrage_antworten';
+const SUPABASE_URL      = 'IHRE_SUPABASE_URL_HIER';        // z.B. https://abcd1234.supabase.co
+const SUPABASE_ANON_KEY = 'IHR_SUPABASE_ANON_KEY_HIER';    // anon/publishable Key
 
-// Einfaches Passwort für die Admin-Seite (admin.html).
-// Bitte ändern. Hinweis: Dies ist ein einfacher Schutz im
-// Browser, keine serverseitige Sicherheit.
-const ADMIN_PASSWORT = 'mf2026';
+// Name der Tabelle (muss mit supabase-setup.sql übereinstimmen)
+const TABLE_NAME = 'antworten';
 
 // Spaltentitel für den Excel-/CSV-Export (Reihenfolge = Spalten)
 const EXPORT_HEADERS = [
@@ -36,3 +37,12 @@ const EXPORT_HEADERS = [
   'Frage 5: Gefühle (Andere)',
   'Weitere Bemerkungen',
 ];
+
+// Hinweis: Das Admin-Passwort wird NICHT hier gesetzt, sondern
+// serverseitig in supabase-setup.sql (Funktion export_antworten).
+// So ist es nicht im öffentlichen Quellcode sichtbar.
+
+function isBackendConfigured() {
+  return SUPABASE_URL.indexOf('http') === 0
+    && SUPABASE_ANON_KEY.indexOf('IHR_') !== 0;
+}

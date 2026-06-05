@@ -162,17 +162,49 @@ if (form) {
     setLoading(true);
     const data = collectData();
 
+    if (!isBackendConfigured()) {
+      setLoading(false);
+      alert('Die Umfrage ist noch nicht mit der Datenbank verbunden.\n\n'
+        + 'Bitte SUPABASE_URL und SUPABASE_ANON_KEY in js/config.js eintragen (siehe README).');
+      return;
+    }
+
     try {
-      // Antwort lokal im Browser speichern (kein Backend nötig)
-      const gespeichert = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      gespeichert.push(data);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(gespeichert));
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + TABLE_NAME, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({
+          erstellt_am:   data.timestamp,
+          vorname:       data.vorname,
+          nachname:      data.nachname,
+          telefon:       data.telefon,
+          email:         data.email,
+          frage1:        data.frage1,
+          frage2:        data.frage2,
+          frage3:        data.frage3,
+          frage4:        data.frage4,
+          frage5:        (data.frage5 || []).join(', '),
+          frage5_andere: data.frage5_andere,
+          bemerkungen:   data.bemerkungen,
+        }),
+      });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        throw new Error('Server-Antwort ' + res.status + ' ' + txt);
+      }
 
       window.location.href = 'thanks.html';
     } catch (err) {
       setLoading(false);
-      alert('Die Antwort konnte nicht gespeichert werden.\n\n' + err.message
-        + '\n\nMöglicherweise ist der Browser-Speicher voll oder im privaten Modus gesperrt.');
+      alert('Die Antwort konnte nicht gesendet werden.\n\n'
+        + 'Bitte prüfen Sie die Internetverbindung und versuchen Sie es erneut.\n\n'
+        + '(' + err.message + ')');
     }
   });
 }
@@ -180,7 +212,7 @@ if (form) {
 // ── Hilfsfunktionen ───────────────────────────────────────────
 function setLoading(on) {
   submitBtn.disabled = on;
-  submitText.textContent = on ? 'Wird gespeichert…' : 'Umfrage absenden';
+  submitText.textContent = on ? 'Wird gesendet…' : 'Umfrage absenden';
   submitLoader.classList.toggle('hidden', !on);
   submitIcon.classList.toggle('hidden', on);
 }
