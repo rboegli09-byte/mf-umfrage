@@ -208,6 +208,19 @@ body.hero-page { background: var(--black); }
   border-radius: 3px;
 }
 
+.header-logo-img {
+  background: var(--white);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+.header-logo-img img {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
 /* ============================================
    SURVEY LAYOUT
    ============================================ */
