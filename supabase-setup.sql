@@ -71,7 +71,7 @@ begin
   if pw <> 'mf2026' then          -- <<< HIER GLEICHES PASSWORT
     raise exception 'Falsches Passwort';
   end if;
-  delete from public.antworten;
+  delete from public.antworten where id is not null;  -- WHERE nötig (Supabase-Schutz)
 end;
 $$;
 
