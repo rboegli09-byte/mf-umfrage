@@ -14,6 +14,11 @@
 const SPREADSHEET_ID = 'IHRE_GOOGLE_TABELLEN_ID_HIER';
 const EMAIL_EMPFAENGER = 'urs.boegli@odermatt-lm.ch';
 
+// Passwort für die Admin-Seite (admin.html). Bitte ändern!
+// Dieses Passwort wird auf der Admin-Seite eingegeben, um alle
+// Antworten abzurufen und als Excel zu exportieren.
+const ADMIN_TOKEN = 'mf2026';
+
 // Spaltentitel (wird automatisch in Zeile 1 geschrieben)
 const HEADERS = [
   'Zeitstempel',
@@ -29,6 +34,48 @@ const HEADERS = [
   'Frage 5: Gefühle (Andere)',
   'Weitere Bemerkungen',
 ];
+
+// ============================================================
+//  doGet – liefert alle Antworten als JSONP an die Admin-Seite
+//  Aufruf: ...?action=export&token=PASSWORT&callback=fnName
+// ============================================================
+function doGet(e) {
+  const params   = (e && e.parameter) ? e.parameter : {};
+  const callback = params.callback || 'callback';
+
+  // Antwort als JSONP verpacken (umgeht CORS-Beschränkungen)
+  const reply = obj =>
+    ContentService
+      .createTextOutput(callback + '(' + JSON.stringify(obj) + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+
+  // Token prüfen
+  if (params.token !== ADMIN_TOKEN) {
+    return reply({ success: false, error: 'Ungültiges Passwort.' });
+  }
+
+  if (params.action === 'export') {
+    try {
+      const sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getActiveSheet();
+      const lastRow = sheet.getLastRow();
+      const lastCol = sheet.getLastColumn();
+
+      if (lastRow < 1) {
+        return reply({ success: true, headers: HEADERS, rows: [] });
+      }
+
+      const values  = sheet.getRange(1, 1, lastRow, lastCol).getValues();
+      const headers = values[0];
+      const rows    = values.slice(1);
+
+      return reply({ success: true, headers: headers, rows: rows });
+    } catch (err) {
+      return reply({ success: false, error: err.toString() });
+    }
+  }
+
+  return reply({ success: false, error: 'Unbekannte Aktion.' });
+}
 
 function doPost(e) {
   try {

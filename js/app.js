@@ -1,9 +1,8 @@
 // ============================================================
 //  MF 6S.180 Umfrage – Formular-Logik
-//  Konfiguration: APPS_SCRIPT_URL unten eintragen
+//  Hinweis: APPS_SCRIPT_URL wird in js/config.js gesetzt
+//  (config.js muss vor app.js geladen werden).
 // ============================================================
-
-const APPS_SCRIPT_URL = 'IHRE_GOOGLE_APPS_SCRIPT_URL_HIER_EINTRAGEN';
 
 // ── Radio-Buttons: visuelle Auswahl ──────────────────────────
 document.querySelectorAll('.radio-group').forEach(group => {
