@@ -83,6 +83,23 @@ body.hero-page { background: var(--black); }
   margin-bottom: 28px;
 }
 
+.logo-img-badge {
+  display: inline-block;
+  background: var(--white);
+  padding: 14px 22px;
+  border-radius: var(--radius);
+  margin-bottom: 28px;
+  box-shadow: var(--shadow);
+}
+.logo-img-badge img {
+  height: 56px;
+  width: auto;
+  display: block;
+}
+@media (max-width: 400px) {
+  .logo-img-badge img { height: 46px; }
+}
+
 .hero-title {
   font-size: clamp(26px, 6vw, 46px);
   font-weight: 800;
