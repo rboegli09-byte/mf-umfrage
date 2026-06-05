@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR-Code – MF 6S.180 Umfrage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- QR-Code Bibliothek -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="qr-page">
+
+  <div class="qr-hero">
+    <div class="qr-hero-overlay"></div>
+    <div class="logo-badge" style="margin-bottom:16px;">MASSEY FERGUSON</div>
+    <h1>QR-Code für die Umfrage</h1>
+    <p>MF 6S.180 Dyna-VT – Kundenbefragung</p>
+  </div>
+
+  <div class="qr-body">
+
+    <div class="qr-card">
+      <h2>GitHub Pages URL eingeben</h2>
+      <div class="qr-url-row">
+        <input type="url" id="urlInput" class="qr-url-input"
+               placeholder="https://IHR-NAME.github.io/mf-survey/"
+               value="">
+        <button class="btn btn-primary" onclick="generateQR()">Generieren</button>
+      </div>
+
+      <div id="qrcode"></div>
+
+      <p id="qr-hint" style="font-size:13px;color:var(--gray-500);margin-bottom:16px;">
+        Geben Sie die URL oben ein und klicken Sie «Generieren».
+      </p>
+
+      <div class="qr-actions">
+        <button class="btn btn-outline" onclick="downloadQR()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          QR-Code herunterladen
+        </button>
+        <button class="btn btn-outline" onclick="window.print()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          Drucken
+        </button>
+      </div>
+    </div>
+
+    <div class="qr-info">
+      <h3>So funktioniert es</h3>
+      <ol>
+        <li>Laden Sie das Projekt zuerst auf GitHub Pages hoch (siehe <code>README.md</code>).</li>
+        <li>Ihre GitHub-Pages-URL lautet:<br>
+            <code>https://IHR-BENUTZERNAME.github.io/mf-survey/</code></li>
+        <li>Geben Sie die URL oben ein und klicken Sie «Generieren».</li>
+        <li>Laden Sie den QR-Code herunter oder drucken Sie ihn direkt aus.</li>
+        <li>Platzieren Sie den QR-Code gut sichtbar am Traktor oder im Ausstellungsbereich.</li>
+      </ol>
+    </div>
+
+  </div>
+
+  <script>
+    let qrInstance = null;
+
+    function generateQR() {
+      const url = document.getElementById('urlInput').value.trim();
+      if (!url) {
+        alert('Bitte geben Sie eine URL ein.');
+        return;
+      }
+
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+      document.getElementById('qr-hint').textContent = url;
+
+      qrInstance = new QRCode(container, {
+        text: url,
+        width: 240,
+        height: 240,
+        colorDark: '#1A1A1A',
+        colorLight: '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrcode canvas');
+      if (!canvas) {
+        alert('Bitte zuerst einen QR-Code generieren.');
+        return;
+      }
+      const link = document.createElement('a');
+      link.download = 'mf-survey-qrcode.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Auto-generate if URL already set
+    window.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('urlInput');
+      if (input.value) generateQR();
+    });
+  </script>
+
+</body>
+</html>
