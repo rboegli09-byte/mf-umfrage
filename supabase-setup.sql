@@ -17,6 +17,7 @@ create table if not exists public.antworten (
   nachname      text,
   telefon       text,
   email         text,
+  traktor       text,   -- Welchen Traktor Probe gefahren
   frage1        text,
   frage2        text,
   frage3        text,

@@ -29,6 +29,7 @@ const EXPORT_HEADERS = [
   'Nachname',
   'Telefon',
   'E-Mail',
+  'Probe gefahrener Traktor',
   'Frage 1: Übersichtlichkeit Bedienelemente',
   'Frage 2: Vertrautheit mit Bedienung',
   'Frage 3: Handling tägliche Arbeiten',

@@ -27,8 +27,8 @@
 
       <!-- Titel -->
       <div class="survey-title-card">
-        <h1>Kundenbefragung</h1>
-        <p class="model-label">MF 6S.180 Dyna-VT</p>
+        <h1>Gewinnspiel</h1>
+        <p class="model-label">MF 6S.180 Dyna-VT und MF 4710</p>
       </div>
 
       <form id="surveyForm" novalidate>
@@ -82,6 +82,26 @@
                    placeholder="max@beispiel.ch" autocomplete="email" required>
             <span class="field-error" id="err-email"></span>
           </div>
+        </div>
+
+        <!-- ── PROBEFAHRT ── -->
+        <div class="form-section">
+          <h2 class="question-text">
+            Welchen Traktor sind Sie Probe gefahren?
+          </h2>
+          <div class="radio-group" id="grp-traktor">
+            <label class="radio-option">
+              <input type="radio" name="traktor" value="MF 4710">
+              <span class="radio-dot"></span>
+              <span class="radio-label">MF 4710</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="traktor" value="MF 6S.180 Dyna-VT">
+              <span class="radio-dot"></span>
+              <span class="radio-label">MF 6S.180 Dyna-VT</span>
+            </label>
+          </div>
+          <span class="field-error" id="err-traktor"></span>
         </div>
 
         <!-- ── FRAGE 1 ── -->
@@ -346,7 +366,7 @@
     </div>
   </main>
 
-  <script src="js/config.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
+  <script src="js/config.js?v=3"></script>
+  <script src="js/app.js?v=3"></script>
 </body>
 </html>

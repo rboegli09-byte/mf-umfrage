@@ -49,6 +49,7 @@ function toRow(a) {
     a.nachname || '',
     a.telefon || '',
     a.email || '',
+    a.traktor || '',
     a.frage1 || '',
     a.frage2 || '',
     a.frage3 || '',

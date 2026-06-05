@@ -89,6 +89,12 @@ function validate() {
     ok = false;
   }
 
+  // Probefahrt-Traktor (Pflicht)
+  if (!document.querySelector('input[name="traktor"]:checked')) {
+    showError('err-traktor', 'Bitte wählen Sie den probegefahrenen Traktor.');
+    ok = false;
+  }
+
   // Radio-Fragen
   const radioFragen = ['frage1','frage2','frage3','frage4'];
   radioFragen.forEach((name, i) => {
@@ -131,6 +137,7 @@ function collectData() {
     nachname:     document.getElementById('nachname').value.trim(),
     telefon:      document.getElementById('telefon').value.trim(),
     email:        document.getElementById('email').value.trim(),
+    traktor:      radio('traktor'),
     frage1:       radio('frage1'),
     frage2:       radio('frage2'),
     frage3:       radio('frage3'),
@@ -184,6 +191,7 @@ if (form) {
           nachname:      data.nachname,
           telefon:       data.telefon,
           email:         data.email,
+          traktor:       data.traktor,
           frage1:        data.frage1,
           frage2:        data.frage2,
           frage3:        data.frage3,
