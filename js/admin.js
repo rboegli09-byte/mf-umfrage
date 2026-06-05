@@ -1,12 +1,12 @@
 // ============================================================
-//  Admin-Seite – lädt alle Umfrage-Antworten und exportiert
-//  sie als Excel (.xlsx) oder CSV.
+//  Admin-Seite – zeigt alle lokal gespeicherten Umfrage-
+//  Antworten und exportiert sie als Excel (.xlsx) oder CSV.
 //
-//  Datenabruf via JSONP (umgeht CORS bei Google Apps Script).
-//  APPS_SCRIPT_URL kommt aus js/config.js.
+//  Kein Backend nötig: Daten kommen aus localStorage
+//  (Schlüssel STORAGE_KEY aus js/config.js).
 // ============================================================
 
-let currentData = null; // { headers: [...], rows: [[...], ...] }
+let currentRows = []; // Array von Antwort-Objekten
 
 const loginCard   = document.getElementById('loginCard');
 const dataCard    = document.getElementById('dataCard');
@@ -17,120 +17,98 @@ const statusLine  = document.getElementById('statusLine');
 const tableWrap   = document.getElementById('tableWrap');
 const countBadge  = document.getElementById('countBadge');
 
-// ── JSONP-Abruf ───────────────────────────────────────────────
-function fetchData(token) {
-  return new Promise((resolve, reject) => {
-    const cbName = 'mfCallback_' + Date.now();
-    const timeout = setTimeout(() => {
-      cleanup();
-      reject(new Error('Zeitüberschreitung – Verbindung fehlgeschlagen.'));
-    }, 20000);
-
-    function cleanup() {
-      clearTimeout(timeout);
-      delete window[cbName];
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    window[cbName] = data => { cleanup(); resolve(data); };
-
-    const script = document.createElement('script');
-    script.src = APPS_SCRIPT_URL
-      + '?action=export'
-      + '&token=' + encodeURIComponent(token)
-      + '&callback=' + cbName;
-    script.onerror = () => { cleanup(); reject(new Error('Netzwerkfehler.')); };
-    document.body.appendChild(script);
-  });
+// ── Antworten aus localStorage lesen ──────────────────────────
+function ladeAntworten() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch (e) {
+    return [];
+  }
 }
 
-// ── Login / Daten laden ───────────────────────────────────────
-async function login() {
-  const token = tokenInput.value.trim();
+// ── Ein Antwort-Objekt in eine Tabellenzeile umwandeln ────────
+function toRow(a) {
+  const ts = a.timestamp ? new Date(a.timestamp) : null;
+  const tsText = ts ? ts.toLocaleString('de-CH') : '';
+  const gefuehle = Array.isArray(a.frage5) ? a.frage5.join(', ') : (a.frage5 || '');
+  return [
+    tsText,
+    a.vorname || '',
+    a.nachname || '',
+    a.telefon || '',
+    a.email || '',
+    a.frage1 || '',
+    a.frage2 || '',
+    a.frage3 || '',
+    a.frage4 || '',
+    gefuehle,
+    a.frage5_andere || '',
+    a.bemerkungen || '',
+  ];
+}
+
+// ── Login (einfacher Passwortschutz im Browser) ───────────────
+function login() {
+  const pw = tokenInput.value.trim();
   loginError.textContent = '';
 
-  if (!token) {
+  if (!pw) {
     loginError.textContent = 'Bitte Passwort eingeben.';
     return;
   }
-
-  if (APPS_SCRIPT_URL === 'IHRE_GOOGLE_APPS_SCRIPT_URL_HIER_EINTRAGEN') {
-    loginError.textContent = 'Backend nicht konfiguriert (APPS_SCRIPT_URL in js/config.js fehlt).';
+  if (pw !== ADMIN_PASSWORT) {
+    loginError.textContent = 'Falsches Passwort.';
     return;
   }
 
-  loginBtn.disabled = true;
-  loginBtn.textContent = 'Lädt…';
-
-  try {
-    const res = await fetchData(token);
-    if (!res.success) {
-      loginError.textContent = res.error || 'Anmeldung fehlgeschlagen.';
-      return;
-    }
-    currentData = res;
-    sessionStorage.setItem('mf_admin_token', token);
-    showData(res);
-  } catch (err) {
-    loginError.textContent = err.message;
-  } finally {
-    loginBtn.disabled = false;
-    loginBtn.textContent = 'Anmelden';
-  }
+  sessionStorage.setItem('mf_admin_ok', '1');
+  zeigeDaten();
 }
 
 // ── Daten anzeigen ────────────────────────────────────────────
-function showData(data) {
+function zeigeDaten() {
   loginCard.classList.add('hidden');
   dataCard.classList.remove('hidden');
 
-  const count = data.rows.length;
+  currentRows = ladeAntworten();
+  const count = currentRows.length;
+
   countBadge.textContent = count + (count === 1 ? ' Antwort' : ' Antworten');
   statusLine.textContent = count === 0
-    ? 'Noch keine Umfrage-Antworten vorhanden.'
-    : 'Geladen am ' + new Date().toLocaleString('de-CH');
+    ? 'Noch keine Umfrage-Antworten auf diesem Gerät gespeichert.'
+    : 'Stand: ' + new Date().toLocaleString('de-CH');
 
-  // Tabelle bauen
   if (count === 0) { tableWrap.innerHTML = ''; return; }
 
   let html = '<table class="data-table"><thead><tr>';
-  data.headers.forEach(h => { html += '<th>' + escapeHtml(h) + '</th>'; });
+  EXPORT_HEADERS.forEach(h => { html += '<th>' + escapeHtml(h) + '</th>'; });
   html += '</tr></thead><tbody>';
-  data.rows.forEach(row => {
+  currentRows.forEach(a => {
     html += '<tr>';
-    data.headers.forEach((_, i) => {
-      html += '<td>' + escapeHtml(formatCell(row[i])) + '</td>';
-    });
+    toRow(a).forEach(cell => { html += '<td>' + escapeHtml(cell) + '</td>'; });
     html += '</tr>';
   });
   html += '</tbody></table>';
   tableWrap.innerHTML = html;
 }
 
-function formatCell(v) {
-  if (v === null || v === undefined) return '';
-  return String(v);
-}
-
 function escapeHtml(s) {
-  return String(s)
+  return String(s === null || s === undefined ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // ── Excel-Export (.xlsx) ──────────────────────────────────────
 function exportXlsx() {
-  if (!currentData || currentData.rows.length === 0) {
-    alert('Keine Daten zum Exportieren.');
-    return;
-  }
-  const aoa = [currentData.headers, ...currentData.rows];
+  if (currentRows.length === 0) { alert('Keine Daten zum Exportieren.'); return; }
+
+  const aoa = [EXPORT_HEADERS, ...currentRows.map(toRow)];
   const ws  = XLSX.utils.aoa_to_sheet(aoa);
 
   // Spaltenbreiten automatisch
-  ws['!cols'] = currentData.headers.map((h, i) => {
+  ws['!cols'] = EXPORT_HEADERS.map((h, i) => {
     let max = String(h).length;
-    currentData.rows.forEach(r => {
+    aoa.slice(1).forEach(r => {
       const len = r[i] ? String(r[i]).length : 0;
       if (len > max) max = len;
     });
@@ -144,18 +122,15 @@ function exportXlsx() {
 
 // ── CSV-Export ────────────────────────────────────────────────
 function exportCsv() {
-  if (!currentData || currentData.rows.length === 0) {
-    alert('Keine Daten zum Exportieren.');
-    return;
-  }
+  if (currentRows.length === 0) { alert('Keine Daten zum Exportieren.'); return; }
+
   const esc = v => {
     const s = (v === null || v === undefined) ? '' : String(v);
     return /[";\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   };
-  const lines = [currentData.headers.map(esc).join(';')];
-  currentData.rows.forEach(r => {
-    lines.push(currentData.headers.map((_, i) => esc(r[i])).join(';'));
-  });
+  const lines = [EXPORT_HEADERS.map(esc).join(';')];
+  currentRows.forEach(a => { lines.push(toRow(a).map(esc).join(';')); });
+
   // BOM für korrekte Umlaute in Excel
   const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
@@ -171,21 +146,20 @@ function dateStamp() {
   return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
 }
 
-async function refresh() {
-  const token = sessionStorage.getItem('mf_admin_token');
-  if (!token) return;
-  statusLine.textContent = 'Aktualisiere…';
-  try {
-    const res = await fetchData(token);
-    if (res.success) { currentData = res; showData(res); }
-  } catch (err) {
-    statusLine.textContent = 'Fehler: ' + err.message;
-  }
+// ── Alle Antworten löschen ────────────────────────────────────
+function alleLoeschen() {
+  if (currentRows.length === 0) { alert('Es sind keine Antworten vorhanden.'); return; }
+  const ok = confirm(
+    'Wirklich ALLE ' + currentRows.length + ' Antworten auf diesem Gerät löschen?\n\n' +
+    'Exportieren Sie vorher das Excel! Dieser Vorgang kann nicht rückgängig gemacht werden.'
+  );
+  if (!ok) return;
+  localStorage.removeItem(STORAGE_KEY);
+  zeigeDaten();
 }
 
 function logout() {
-  sessionStorage.removeItem('mf_admin_token');
-  currentData = null;
+  sessionStorage.removeItem('mf_admin_ok');
   tokenInput.value = '';
   dataCard.classList.add('hidden');
   loginCard.classList.remove('hidden');
@@ -196,11 +170,11 @@ loginBtn.addEventListener('click', login);
 tokenInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 document.getElementById('btnXlsx').addEventListener('click', exportXlsx);
 document.getElementById('btnCsv').addEventListener('click', exportCsv);
-document.getElementById('btnRefresh').addEventListener('click', refresh);
+document.getElementById('btnRefresh').addEventListener('click', zeigeDaten);
+document.getElementById('btnClear').addEventListener('click', alleLoeschen);
 document.getElementById('btnLogout').addEventListener('click', logout);
 
-// Auto-Login wenn Token in dieser Session vorhanden
+// Bereits in dieser Session angemeldet?
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = sessionStorage.getItem('mf_admin_token');
-  if (saved) { tokenInput.value = saved; login(); }
+  if (sessionStorage.getItem('mf_admin_ok') === '1') zeigeDaten();
 });

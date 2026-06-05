@@ -38,8 +38,8 @@
           Admin-Bereich
         </h2>
         <p style="font-size:14px;color:var(--gray-500);margin-bottom:18px;line-height:1.6;">
-          Geben Sie das Passwort ein, um alle Umfrage-Antworten zu laden und als Excel
-          oder CSV zu exportieren.
+          Geben Sie das Passwort ein, um alle auf <strong>diesem Gerät</strong> gespeicherten
+          Umfrage-Antworten anzuzeigen und als Excel oder CSV zu exportieren.
         </p>
         <div class="field-group">
           <label for="tokenInput">Passwort</label>
@@ -72,6 +72,7 @@
             </button>
             <button class="btn btn-outline" id="btnCsv">CSV exportieren</button>
             <button class="btn btn-outline" id="btnRefresh">Aktualisieren</button>
+            <button class="btn btn-outline btn-danger" id="btnClear">Alle löschen</button>
           </div>
 
           <p class="status-line" id="statusLine"></p>

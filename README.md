@@ -1,8 +1,29 @@
 # Massey Ferguson MF 6S.180 Dyna-VT – Umfrage Website
 
 Einfache, mobiloptimierte Umfrage-Website für die Ausstellung – inklusive **Gewinnspiel**.
-Kostenlos über **GitHub Pages** veröffentlichbar, Daten werden in **Google Sheets** gespeichert und per E-Mail zugestellt.
-Ein passwortgeschützter **Admin-Bereich** ermöglicht den Excel-/CSV-Export aller Antworten.
+Kostenlos über **GitHub Pages** veröffentlichbar. **Kein Backend / kein Server nötig:**
+Die Antworten werden direkt im Browser gespeichert und über einen passwortgeschützten
+**Admin-Bereich** als **Excel (.xlsx)** oder CSV exportiert.
+
+---
+
+## ⚠️ Wichtig: So funktioniert die Datenspeicherung
+
+Da es kein Backend gibt, werden alle Antworten **lokal im Browser des Geräts** gespeichert,
+auf dem die Umfrage ausgefüllt wird (Technik: `localStorage`).
+
+| Betriebsart | Funktioniert? |
+|---|---|
+| **Gemeinsames Gerät am Stand** (Tablet/Laptop), alle füllen dort aus | ✅ Ja – empfohlen |
+| Jeder Besucher füllt per QR-Code auf dem **eigenen Handy** aus | ❌ Nein – Daten bleiben verstreut auf den Besucher-Handys |
+
+**Empfehlung:** Stellen Sie ein **Tablet oder einen Laptop** am Ausstellungsstand bereit,
+auf dem die Umfrage geöffnet ist. Alle Teilnehmer füllen am selben Gerät aus. Am Ende
+exportieren Sie auf genau diesem Gerät das Excel über die Admin-Seite.
+
+> Der QR-Code ist trotzdem praktisch: Damit öffnen Sie die Umfrage schnell auf dem
+> Stand-Tablet, oder Sie zeigen die Startseite her. Für die zentrale Auswertung muss aber
+> auf **einem** Gerät ausgefüllt werden.
 
 ---
 
@@ -17,13 +38,11 @@ mf-survey/
 ├── admin.html          ← Admin-Bereich: Excel-/CSV-Export
 ├── css/style.css       ← Alle Stile
 ├── js/
-│   ├── config.js       ← Backend-URL hier eintragen! (einzige Stelle)
-│   ├── app.js          ← Formular-Logik
+│   ├── config.js       ← Einstellungen (Passwort, Spalten)
+│   ├── app.js          ← Formular-Logik (speichert lokal)
 │   └── admin.js        ← Admin-/Export-Logik
-├── images/
-│   └── hero.jpg        ← Ihr Hintergrundbild (selbst hinzufügen)
-└── backend/
-    └── Code.gs         ← Google Apps Script (Backend)
+└── images/
+    └── hero.jpg        ← Ihr Hintergrundbild (selbst hinzufügen)
 ```
 
 ---
@@ -34,74 +53,20 @@ mf-survey/
 2. Benennen Sie die Datei **`hero.jpg`**.
 3. Kopieren Sie die Datei in den Ordner `images/`.
 
-> Das Bild erscheint auf der Startseite, der QR-Code-Seite und als visueller Hintergrund.
+> Das Bild erscheint auf der Startseite und im QR-Code-Bereich.
 
 ---
 
-## Schritt 2 – Google Sheets Backend einrichten
+## Schritt 2 – Admin-Passwort festlegen (optional, empfohlen)
 
-### 2a) Google Tabelle erstellen
-
-1. Öffnen Sie [sheets.google.com](https://sheets.google.com) und erstellen Sie eine neue leere Tabelle.
-2. Kopieren Sie die **Tabellen-ID** aus der URL:
-   `https://docs.google.com/spreadsheets/d/**HIER_IST_DIE_ID**/edit`
-
-### 2b) Apps Script einrichten
-
-1. Klicken Sie in der Tabelle auf **Erweiterungen → Apps Script**.
-2. Löschen Sie den vorhandenen Code und fügen Sie den Inhalt von `backend/Code.gs` ein.
-3. Tragen Sie Ihre Tabellen-ID ein:
-   ```javascript
-   const SPREADSHEET_ID = 'IHRE_GOOGLE_TABELLEN_ID_HIER';
-   ```
-4. Klicken Sie auf **Speichern** (Disketten-Symbol).
-
-### 2c) Als Web-App bereitstellen
-
-1. Klicken Sie auf **Bereitstellen → Neue Bereitstellung**.
-2. Klicken Sie auf das Zahnrad-Symbol und wählen Sie **Web-App**.
-3. Einstellungen:
-   - **Beschreibung:** MF Umfrage
-   - **Ausführen als:** Ich (Ihr Google-Konto)
-   - **Zugriff:** Jeder
-4. Klicken Sie auf **Bereitstellen** und kopieren Sie die **Web-App-URL**.
-
-### 2d) URL in config.js eintragen
-
-Öffnen Sie `js/config.js` und ersetzen Sie den Platzhalter (nur **eine** Stelle,
-gilt für Formular **und** Admin-Bereich):
+Öffnen Sie `js/config.js` und ändern Sie das Passwort für die Admin-Seite:
 
 ```javascript
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/IHRE_URL/exec';
+const ADMIN_PASSWORT = 'mf2026';   // <-- bitte ändern!
 ```
 
-### 2e) Backend testen
-
-1. Klicken Sie im Apps Script Editor auf **Ausführen → testDoPost**.
-2. Prüfen Sie die Google Tabelle – eine Testzeile sollte erscheinen.
-3. Prüfen Sie den E-Mail-Eingang bei `urs.boegli@odermatt-lm.ch`.
-
-### CSV/Excel-Export
-
-**Variante A – über die Admin-Seite (empfohlen):**
-1. Öffnen Sie `admin.html` (z. B. `https://IHR-NAME.github.io/mf-umfrage/admin.html`).
-2. Geben Sie das Admin-Passwort ein (siehe unten).
-3. Alle Antworten werden geladen – klicken Sie auf **Excel (.xlsx)** oder **CSV exportieren**.
-
-**Variante B – direkt aus Google Sheets:**
-1. Öffnen Sie Ihre Google Tabelle.
-2. Klicken Sie auf **Datei → Herunterladen → Microsoft Excel (.xlsx)** oder **CSV**.
-
-### Admin-Passwort festlegen
-
-Das Passwort für die Admin-Seite wird im Backend gesetzt – öffnen Sie `backend/Code.gs`:
-
-```javascript
-const ADMIN_TOKEN = 'mf2026';   // <-- bitte ändern!
-```
-
-> **Wichtig:** Nach einer Änderung müssen Sie die Web-App in Apps Script erneut
-> **bereitstellen** (Bereitstellen → Bereitstellungen verwalten → bearbeiten → neue Version).
+> Hinweis: Dies ist ein einfacher Schutz im Browser (keine serverseitige Sicherheit).
+> Er verhindert, dass jemand am Stand versehentlich die Admin-Seite öffnet oder Daten löscht.
 > Die Admin-Seite ist nur über die direkte URL `.../admin.html` erreichbar und für
 > Suchmaschinen gesperrt (`noindex`).
 
@@ -112,7 +77,7 @@ const ADMIN_TOKEN = 'mf2026';   // <-- bitte ändern!
 ### 3a) GitHub Repository erstellen
 
 1. Öffnen Sie [github.com](https://github.com) und erstellen Sie ein **neues Repository**.
-2. Name: `mf-survey` (oder beliebig)
+2. Name: `mf-umfrage` (oder beliebig)
 3. Sichtbarkeit: **Public** (für kostenlose GitHub Pages)
 
 ### 3b) Dateien hochladen
@@ -135,9 +100,9 @@ const ADMIN_TOKEN = 'mf2026';   // <-- bitte ändern!
 3. Unter **Source:** wählen Sie **Deploy from a branch**.
 4. Branch: **main**, Ordner: **/ (root)**.
 5. Klicken Sie auf **Save**.
-6. Nach ca. 2 Minuten ist die Website unter dieser URL erreichbar:
+6. Nach ca. 2 Minuten ist die Website erreichbar:
    ```
-   https://IHR-BENUTZERNAME.github.io/mf-survey/
+   https://IHR-BENUTZERNAME.github.io/mf-umfrage/
    ```
 
 ---
@@ -146,7 +111,7 @@ const ADMIN_TOKEN = 'mf2026';   // <-- bitte ändern!
 
 1. Öffnen Sie `qr.html` in einem Browser (lokal oder auf GitHub Pages).
 2. Geben Sie Ihre GitHub-Pages-URL ein:
-   `https://IHR-BENUTZERNAME.github.io/mf-survey/`
+   `https://IHR-BENUTZERNAME.github.io/mf-umfrage/`
 3. Klicken Sie auf **Generieren**.
 4. Laden Sie den QR-Code als PNG herunter oder drucken Sie ihn direkt aus.
 
@@ -154,11 +119,23 @@ const ADMIN_TOKEN = 'mf2026';   // <-- bitte ändern!
 
 ---
 
+## Schritt 5 – Auswertung: Excel exportieren
+
+1. Öffnen Sie auf dem **Stand-Gerät** (auf dem ausgefüllt wurde) die Seite `admin.html`,
+   z. B. `https://IHR-NAME.github.io/mf-umfrage/admin.html`.
+2. Geben Sie das Admin-Passwort ein.
+3. Sie sehen alle Antworten in einer Tabelle. Klicken Sie auf **Excel (.xlsx)** oder
+   **CSV exportieren** – die Datei wird heruntergeladen.
+4. Mit **Alle löschen** können Sie nach dem Export die Daten für die nächste Veranstaltung
+   zurücksetzen (vorher unbedingt exportieren!).
+
+---
+
 ## Lokale Vorschau
 
-Öffnen Sie `index.html` direkt im Browser – das Formular funktioniert auch ohne Backend (Daten werden nur in der Konsole angezeigt).
+Öffnen Sie `index.html` direkt im Browser – alles funktioniert ohne Server.
 
-Für eine vollständige lokale Vorschau mit einem einfachen HTTP-Server:
+Für eine saubere lokale Vorschau mit einem einfachen HTTP-Server:
 ```bash
 # Python 3
 python -m http.server 8080
@@ -172,9 +149,9 @@ python -m http.server 8080
 | Feature | Lösung |
 |---|---|
 | Hosting | GitHub Pages (kostenlos) |
-| Datenspeicherung | Google Sheets + Apps Script |
-| E-Mail-Versand | Google Apps Script MailApp |
-| CSV/Excel-Export | Google Sheets Download |
+| Backend | Keines – läuft vollständig im Browser |
+| Datenspeicherung | `localStorage` (auf dem ausfüllenden Gerät) |
+| Excel-Export | SheetJS (xlsx) im Browser, Admin-Seite |
 | QR-Code | qrcode.js (CDN) |
 | Schrift | Inter (Google Fonts) |
 | Kompatibilität | Alle modernen Browser, iOS Safari, Android Chrome |
@@ -183,9 +160,10 @@ python -m http.server 8080
 
 ## Häufige Probleme
 
-**Das Formular sendet, aber es kommt keine E-Mail an:**
-→ Prüfen Sie, ob die Web-App-URL korrekt in `js/app.js` eingetragen ist.
-→ Prüfen Sie, ob Google Apps Script die nötigen Berechtigungen hat (beim ersten Bereitstellen).
+**Auf der Admin-Seite werden keine Antworten angezeigt:**
+→ Antworten werden nur auf dem **Gerät** gespeichert, auf dem ausgefüllt wurde.
+   Öffnen Sie die Admin-Seite auf genau diesem Gerät (und im selben Browser).
+→ Im privaten/Inkognito-Modus wird `localStorage` beim Schliessen gelöscht – nicht verwenden.
 
 **Das Hintergrundbild wird nicht angezeigt:**
 → Stellen Sie sicher, dass die Datei exakt `images/hero.jpg` heisst.

@@ -163,23 +163,16 @@ if (form) {
     const data = collectData();
 
     try {
-      if (APPS_SCRIPT_URL === 'IHRE_GOOGLE_APPS_SCRIPT_URL_HIER_EINTRAGEN') {
-        // Fallback: nur lokale Bestätigung (kein Backend konfiguriert)
-        console.warn('Apps Script URL nicht konfiguriert – Daten werden nur lokal angezeigt.');
-        console.table(data);
-        await new Promise(r => setTimeout(r, 800)); // kurze Demo-Pause
-      } else {
-        await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors', // Google Apps Script benötigt no-cors
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-      }
+      // Antwort lokal im Browser speichern (kein Backend nötig)
+      const gespeichert = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      gespeichert.push(data);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(gespeichert));
+
       window.location.href = 'thanks.html';
     } catch (err) {
       setLoading(false);
-      alert('Fehler beim Senden. Bitte versuchen Sie es erneut.\n\n' + err.message);
+      alert('Die Antwort konnte nicht gespeichert werden.\n\n' + err.message
+        + '\n\nMöglicherweise ist der Browser-Speicher voll oder im privaten Modus gesperrt.');
     }
   });
 }
@@ -187,7 +180,7 @@ if (form) {
 // ── Hilfsfunktionen ───────────────────────────────────────────
 function setLoading(on) {
   submitBtn.disabled = on;
-  submitText.textContent = on ? 'Wird gesendet…' : 'Umfrage absenden';
+  submitText.textContent = on ? 'Wird gespeichert…' : 'Umfrage absenden';
   submitLoader.classList.toggle('hidden', !on);
   submitIcon.classList.toggle('hidden', on);
 }
