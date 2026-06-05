@@ -1,7 +1,8 @@
 # Massey Ferguson MF 6S.180 Dyna-VT – Umfrage Website
 
-Einfache, mobiloptimierte Umfrage-Website für die Ausstellung.
+Einfache, mobiloptimierte Umfrage-Website für die Ausstellung – inklusive **Gewinnspiel**.
 Kostenlos über **GitHub Pages** veröffentlichbar, Daten werden in **Google Sheets** gespeichert und per E-Mail zugestellt.
+Ein passwortgeschützter **Admin-Bereich** ermöglicht den Excel-/CSV-Export aller Antworten.
 
 ---
 
@@ -13,8 +14,12 @@ mf-survey/
 ├── survey.html         ← Umfrageformular
 ├── thanks.html         ← Danke-Seite
 ├── qr.html             ← QR-Code Generator
+├── admin.html          ← Admin-Bereich: Excel-/CSV-Export
 ├── css/style.css       ← Alle Stile
-├── js/app.js           ← Formular-Logik (URL hier eintragen!)
+├── js/
+│   ├── config.js       ← Backend-URL hier eintragen! (einzige Stelle)
+│   ├── app.js          ← Formular-Logik
+│   └── admin.js        ← Admin-/Export-Logik
 ├── images/
 │   └── hero.jpg        ← Ihr Hintergrundbild (selbst hinzufügen)
 └── backend/
@@ -61,9 +66,10 @@ mf-survey/
    - **Zugriff:** Jeder
 4. Klicken Sie auf **Bereitstellen** und kopieren Sie die **Web-App-URL**.
 
-### 2d) URL in app.js eintragen
+### 2d) URL in config.js eintragen
 
-Öffnen Sie `js/app.js` und ersetzen Sie den Platzhalter:
+Öffnen Sie `js/config.js` und ersetzen Sie den Platzhalter (nur **eine** Stelle,
+gilt für Formular **und** Admin-Bereich):
 
 ```javascript
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/IHRE_URL/exec';
@@ -75,10 +81,29 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/IHRE_URL/exec';
 2. Prüfen Sie die Google Tabelle – eine Testzeile sollte erscheinen.
 3. Prüfen Sie den E-Mail-Eingang bei `urs.boegli@odermatt-lm.ch`.
 
-### CSV/Excel-Export aus Google Sheets
+### CSV/Excel-Export
 
+**Variante A – über die Admin-Seite (empfohlen):**
+1. Öffnen Sie `admin.html` (z. B. `https://IHR-NAME.github.io/mf-umfrage/admin.html`).
+2. Geben Sie das Admin-Passwort ein (siehe unten).
+3. Alle Antworten werden geladen – klicken Sie auf **Excel (.xlsx)** oder **CSV exportieren**.
+
+**Variante B – direkt aus Google Sheets:**
 1. Öffnen Sie Ihre Google Tabelle.
 2. Klicken Sie auf **Datei → Herunterladen → Microsoft Excel (.xlsx)** oder **CSV**.
+
+### Admin-Passwort festlegen
+
+Das Passwort für die Admin-Seite wird im Backend gesetzt – öffnen Sie `backend/Code.gs`:
+
+```javascript
+const ADMIN_TOKEN = 'mf2026';   // <-- bitte ändern!
+```
+
+> **Wichtig:** Nach einer Änderung müssen Sie die Web-App in Apps Script erneut
+> **bereitstellen** (Bereitstellen → Bereitstellungen verwalten → bearbeiten → neue Version).
+> Die Admin-Seite ist nur über die direkte URL `.../admin.html` erreichbar und für
+> Suchmaschinen gesperrt (`noindex`).
 
 ---
 
