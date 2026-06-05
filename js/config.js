@@ -16,8 +16,8 @@
 //
 // ============================================================
 
-const SUPABASE_URL      = 'IHRE_SUPABASE_URL_HIER';        // z.B. https://abcd1234.supabase.co
-const SUPABASE_ANON_KEY = 'IHR_SUPABASE_ANON_KEY_HIER';    // anon/publishable Key
+const SUPABASE_URL      = 'https://xknknlsppivsnkaszzjm.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_k19y9WoReu0Upxg5SahkQw_FRPK-h4t';
 
 // Name der Tabelle (muss mit supabase-setup.sql übereinstimmen)
 const TABLE_NAME = 'antworten';
