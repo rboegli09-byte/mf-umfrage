@@ -7,9 +7,11 @@
   <title>Admin – MF 6S.180 Umfrage</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=5">
   <!-- SheetJS für Excel-Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Chart.js für die Auswertungs-Diagramme -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body class="admin-page">
 
@@ -78,6 +80,24 @@
           <p class="status-line" id="statusLine"></p>
         </div>
 
+        <!-- AUSWERTUNG / DIAGRAMME -->
+        <div class="form-section" id="statsCard">
+          <h2 class="section-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>
+            </svg>
+            Auswertung
+          </h2>
+
+          <div class="stat-total">
+            <div class="stat-total-number" id="statTotal">0</div>
+            <div class="stat-total-label">Teilnehmer haben die Umfrage ausgefüllt</div>
+          </div>
+
+          <div class="charts-grid" id="chartsGrid"></div>
+        </div>
+
         <div class="form-section" style="padding:0;overflow:hidden;">
           <div class="table-wrap" id="tableWrap"></div>
         </div>
@@ -86,7 +106,7 @@
     </div>
   </main>
 
-  <script src="js/config.js?v=4"></script>
-  <script src="js/admin.js?v=4"></script>
+  <script src="js/config.js?v=5"></script>
+  <script src="js/admin.js?v=5"></script>
 </body>
 </html>

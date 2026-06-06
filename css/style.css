@@ -709,6 +709,43 @@ body.admin-page { background: var(--gray-100); }
 
 .status-line { font-size: 13px; color: var(--gray-500); margin: 0; }
 
+/* Auswertung / Diagramme */
+#statsCard { margin-bottom: 14px; }
+
+.stat-total {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+  color: var(--white);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  text-align: center;
+  margin-bottom: 22px;
+}
+.stat-total-number { font-size: 48px; font-weight: 800; line-height: 1; }
+.stat-total-label  { font-size: 14px; font-weight: 500; opacity: 0.92; margin-top: 6px; }
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+.chart-box {
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 16px 16px 8px;
+  background: var(--white);
+}
+.chart-box h3 {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 12px;
+  line-height: 1.35;
+  min-height: 36px;
+}
+.chart-box canvas { max-height: 240px; }
+.chart-noanswer { font-size: 13px; color: var(--gray-500); padding: 20px 0; text-align: center; }
+.charts-empty { font-size: 14px; color: var(--gray-500); }
+
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .data-table {

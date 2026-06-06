@@ -8,6 +8,31 @@
 
 let currentRows = [];     // Array von Antwort-Objekten aus Supabase
 let currentPw   = '';     // zuletzt verwendetes Passwort (für Refresh/Löschen)
+let chartInstances = [];  // aktive Chart.js-Diagramme (zum Aufräumen)
+
+// Fragen mit fester Antwort-Reihenfolge für die Diagramme
+const STAT_FRAGEN = [
+  { key:'traktor', titel:'Probe gefahrener Traktor', multi:false,
+    optionen:['MF 4710','MF 6S.180 Dyna-VT'] },
+  { key:'frage1', titel:'Frage 1: Übersichtlichkeit Bedienelemente', multi:false,
+    optionen:['Sehr gut','Gut','Mittel','Schlecht','Sehr schlecht'] },
+  { key:'frage2', titel:'Frage 2: Vertrautheit mit Bedienung', multi:false,
+    optionen:['Sofort','Nach kurzer Einarbeitung','Nach mehreren Einsätzen','Eher schwierig','Sehr schwierig'] },
+  { key:'frage3', titel:'Frage 3: Handling tägliche Arbeiten', multi:false,
+    optionen:['Sehr einfach','Einfach','Durchschnittlich','Eher kompliziert','Sehr kompliziert'] },
+  { key:'frage4', titel:'Frage 4: Übersicht aus Kabine', multi:false,
+    optionen:['Sehr zufrieden','Zufrieden','Neutral','Unzufrieden','Sehr unzufrieden'] },
+  { key:'frage5', titel:'Frage 5: Gefühle (Mehrfachauswahl)', multi:true,
+    optionen:['Stolz','Vertrauen','Freude','Gleichgültigkeit','Unsicherheit','Frust'] },
+  { key:'frage6', titel:'Frage 6: Welchen MF gerne probefahren', multi:false,
+    optionen:['5M Serie','5S Serie','6S Serie','7S Serie','Andere'] },
+];
+
+// Farbpalette (MF-Stil: Rot-Töne, Grau, Schwarz)
+const CHART_COLORS = [
+  '#C8102E','#E8384F','#F2849A','#1A1A1A','#737373',
+  '#D0D0D0','#9E0B24','#FF8FA3','#404040','#FBCAD3'
+];
 
 const loginCard   = document.getElementById('loginCard');
 const dataCard    = document.getElementById('dataCard');
@@ -106,6 +131,9 @@ function zeigeDaten() {
     ? 'Noch keine Umfrage-Antworten vorhanden.'
     : 'Geladen am ' + new Date().toLocaleString('de-CH');
 
+  // Auswertung / Diagramme aktualisieren
+  renderStatistik();
+
   if (count === 0) { tableWrap.innerHTML = ''; return; }
 
   let html = '<table class="data-table"><thead><tr>';
@@ -124,6 +152,102 @@ function escapeHtml(s) {
   return String(s === null || s === undefined ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;')
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ── Auswertung / Kreisdiagramme ───────────────────────────────
+function renderStatistik() {
+  const total = currentRows.length;
+  const totalEl = document.getElementById('statTotal');
+  if (totalEl) totalEl.textContent = total;
+
+  const grid = document.getElementById('chartsGrid');
+  if (!grid) return;
+
+  // Alte Diagramme aufräumen
+  chartInstances.forEach(c => c.destroy());
+  chartInstances = [];
+  grid.innerHTML = '';
+
+  if (total === 0) {
+    grid.innerHTML = '<p class="charts-empty">Sobald Antworten vorliegen, erscheinen hier die Diagramme.</p>';
+    return;
+  }
+
+  STAT_FRAGEN.forEach(frage => {
+    // Antworten zählen
+    const counts = {};
+    frage.optionen.forEach(o => { counts[o] = 0; });
+
+    currentRows.forEach(row => {
+      const raw = row[frage.key];
+      if (!raw) return;
+      const werte = frage.multi
+        ? String(raw).split(',').map(s => s.trim()).filter(Boolean)
+        : [String(raw).trim()];
+      werte.forEach(w => {
+        if (counts[w] === undefined) counts[w] = 0; // unerwartete Werte trotzdem zeigen
+        counts[w]++;
+      });
+    });
+
+    // Nur Optionen mit mind. 1 Nennung ins Diagramm
+    const labels = Object.keys(counts).filter(k => counts[k] > 0);
+    const data   = labels.map(l => counts[l]);
+    const summe  = data.reduce((a, b) => a + b, 0);
+
+    // Box bauen
+    const box = document.createElement('div');
+    box.className = 'chart-box';
+    const h3 = document.createElement('h3');
+    h3.textContent = frage.titel;
+    box.appendChild(h3);
+
+    if (summe === 0) {
+      const p = document.createElement('p');
+      p.className = 'chart-noanswer';
+      p.textContent = 'Keine Antworten.';
+      box.appendChild(p);
+      grid.appendChild(box);
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    box.appendChild(canvas);
+    grid.appendChild(box);
+
+    const chart = new Chart(canvas, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: labels.map((_, i) => CHART_COLORS[i % CHART_COLORS.length]),
+          borderColor: '#ffffff',
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { font: { size: 12 }, padding: 10, boxWidth: 14 },
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const v = ctx.parsed;
+                const pct = Math.round((v / summe) * 100);
+                return ' ' + ctx.label + ': ' + v + ' (' + pct + '%)';
+              },
+            },
+          },
+        },
+      },
+    });
+    chartInstances.push(chart);
+  });
 }
 
 // ── Aktualisieren ─────────────────────────────────────────────
