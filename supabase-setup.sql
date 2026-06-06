@@ -24,6 +24,7 @@ create table if not exists public.antworten (
   frage4        text,
   frage5        text,   -- Mehrfachauswahl, kommasepariert
   frage5_andere text,
+  frage6        text,   -- Welchen MF gerne probefahren
   bemerkungen   text
 );
 

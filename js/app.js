@@ -112,6 +112,12 @@ function validate() {
     ok = false;
   }
 
+  // Frage 6 (Pflicht, Einfachauswahl)
+  if (!document.querySelector('input[name="frage6"]:checked')) {
+    showError('err-frage6', 'Bitte beantworten Sie Frage 6.');
+    ok = false;
+  }
+
   // DSGVO
   if (!dsgvoInput.checked) {
     showError('err-dsgvo', 'Bitte stimmen Sie der Datenschutzerklärung zu.');
@@ -144,6 +150,7 @@ function collectData() {
     frage4:       radio('frage4'),
     frage5:       frage5Values.filter(v => v !== 'Andere'),
     frage5_andere: (cbAndere && cbAndere.checked) ? andereText.value.trim() : '',
+    frage6:       radio('frage6'),
     bemerkungen:  document.getElementById('bemerkungen').value.trim(),
     timestamp:    new Date().toISOString(),
   };
@@ -198,6 +205,7 @@ if (form) {
           frage4:        data.frage4,
           frage5:        (data.frage5 || []).join(', '),
           frage5_andere: data.frage5_andere,
+          frage6:        data.frage6,
           bemerkungen:   data.bemerkungen,
         }),
       });

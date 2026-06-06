@@ -56,6 +56,7 @@ function toRow(a) {
     a.frage4 || '',
     a.frage5 || '',
     a.frage5_andere || '',
+    a.frage6 || '',
     a.bemerkungen || '',
   ];
 }
