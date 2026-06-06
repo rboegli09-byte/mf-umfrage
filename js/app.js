@@ -110,6 +110,18 @@ function validate() {
     ok = false;
   }
 
+  // Landwirt (Pflicht)
+  if (!document.querySelector('input[name="landwirt"]:checked')) {
+    showError('err-landwirt', 'Bitte beantworten Sie diese Frage.');
+    ok = false;
+  }
+
+  // Anschaffung (Pflicht)
+  if (!document.querySelector('input[name="anschaffung"]:checked')) {
+    showError('err-anschaffung', 'Bitte wählen Sie einen Zeitpunkt.');
+    ok = false;
+  }
+
   // Radio-Fragen
   const radioFragen = ['frage1','frage2','frage3','frage4'];
   radioFragen.forEach((name, i) => {
@@ -163,6 +175,8 @@ function collectData() {
     telefon:      document.getElementById('telefon').value.trim(),
     email:        document.getElementById('email').value.trim(),
     traktor:      radio('traktor'),
+    landwirt:     radio('landwirt'),
+    anschaffung:  radio('anschaffung'),
     frage1:       radio('frage1'),
     frage2:       radio('frage2'),
     frage3:       radio('frage3'),
@@ -219,6 +233,8 @@ if (form) {
           telefon:       data.telefon,
           email:         data.email,
           traktor:       data.traktor,
+          landwirt:      data.landwirt,
+          anschaffung:   data.anschaffung,
           frage1:        data.frage1,
           frage2:        data.frage2,
           frage3:        data.frage3,

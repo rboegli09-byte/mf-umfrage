@@ -18,6 +18,8 @@ create table if not exists public.antworten (
   telefon       text,
   email         text,
   traktor       text,   -- Welchen Traktor Probe gefahren
+  landwirt      text,   -- Bist du Landwirt? (Ja/Nein)
+  anschaffung   text,   -- Geplante Anschaffung (2026/2027/2028/später/unentschlossen)
   frage1        text,
   frage2        text,
   frage3        text,
