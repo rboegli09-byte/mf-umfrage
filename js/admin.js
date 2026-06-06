@@ -17,7 +17,7 @@ const STAT_FRAGEN = [
   { key:'frage1', titel:'Frage 1: Übersichtlichkeit Bedienelemente', multi:false,
     optionen:['Sehr gut','Gut','Mittel','Schlecht','Sehr schlecht'] },
   { key:'frage2', titel:'Frage 2: Vertrautheit mit Bedienung', multi:false,
-    optionen:['Sofort','Nach kurzer Einarbeitung','Nach mehreren Einsätzen','Eher schwierig','Sehr schwierig'] },
+    optionen:['Sofort','Nach kurzer Einweisung','Eher schwierig','Sehr schwierig'] },
   { key:'frage3', titel:'Frage 3: Handling tägliche Arbeiten', multi:false,
     optionen:['Sehr einfach','Einfach','Durchschnittlich','Eher kompliziert','Sehr kompliziert'] },
   { key:'frage4', titel:'Frage 4: Übersicht aus Kabine', multi:false,
