@@ -6,7 +6,7 @@
   <title>Umfrage – MF 6S.180 Dyna-VT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=4">
+  <link rel="stylesheet" href="css/style.css?v=11">
 </head>
 <body class="survey-page">
 
@@ -442,6 +442,14 @@
 
         <!-- ── SUBMIT ── -->
         <div class="submit-section">
+          <div id="dupNotice" class="info-note hidden">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span>Mit dieser E-Mail-Adresse wurde bereits an der Umfrage teilgenommen.
+            Pro Person ist nur <strong>eine</strong> Teilnahme möglich.</span>
+          </div>
           <button type="submit" class="btn btn-primary btn-large btn-full btn-submit" id="submitBtn">
             <span id="submitText">Umfrage absenden</span>
             <span id="submitLoader" class="loader hidden"></span>
@@ -459,7 +467,7 @@
     </div>
   </main>
 
-  <script src="js/config.js?v=10"></script>
-  <script src="js/app.js?v=10"></script>
+  <script src="js/config.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

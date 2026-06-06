@@ -503,6 +503,22 @@ body.hero-page { background: var(--black); }
 .dsgvo-text { font-size: 13px; color: var(--gray-700); line-height: 1.7; }
 .dsgvo-text a { color: var(--red); text-decoration: underline; }
 
+.info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #EAF3FB;
+  border: 1.5px solid #B6D4EC;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: #1C4E80;
+  line-height: 1.5;
+}
+.info-note svg { flex-shrink: 0; stroke: #2A6FB0; margin-top: 1px; }
+.info-note strong { color: #143a61; }
+
 .field-error {
   display: block;
   font-size: 12px;
