@@ -37,6 +37,7 @@ const EXPORT_HEADERS = [
   'Frage 5: Gefühle (Auswahl)',
   'Frage 5: Gefühle (Andere)',
   'Frage 6: Welchen MF gerne probefahren',
+  'Frage 6: Andere (Freitext)',
   'Weitere Bemerkungen',
 ];
 

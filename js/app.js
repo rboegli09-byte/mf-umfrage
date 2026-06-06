@@ -40,6 +40,21 @@ if (cbAndere) {
   });
 }
 
+// ── Frage 6 "Andere"-Textfeld ein-/ausblenden ───────────────
+const frage6AndereText = document.getElementById('frage6-andere-text');
+document.querySelectorAll('input[name="frage6"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const show = r.checked && r.value === 'Andere';
+    if (frage6AndereText) {
+      frage6AndereText.classList.toggle('hidden', !show);
+      if (show) frage6AndereText.focus();
+    }
+  });
+});
+if (frage6AndereText) {
+  frage6AndereText.addEventListener('input', () => clearError('err-frage6'));
+}
+
 // ── DSGVO-Checkbox ───────────────────────────────────────────
 const dsgvoInput = document.getElementById('dsgvo');
 const dsgvoItem  = document.getElementById('dsgvo-item');
@@ -113,8 +128,12 @@ function validate() {
   }
 
   // Frage 6 (Pflicht, Einfachauswahl)
-  if (!document.querySelector('input[name="frage6"]:checked')) {
+  const f6 = document.querySelector('input[name="frage6"]:checked');
+  if (!f6) {
     showError('err-frage6', 'Bitte beantworten Sie Frage 6.');
+    ok = false;
+  } else if (f6.value === 'Andere' && !frage6AndereText.value.trim()) {
+    showError('err-frage6', 'Bitte geben Sie an, welchen MF Sie gerne probefahren würden.');
     ok = false;
   }
 
@@ -151,6 +170,7 @@ function collectData() {
     frage5:       frage5Values.filter(v => v !== 'Andere'),
     frage5_andere: (cbAndere && cbAndere.checked) ? andereText.value.trim() : '',
     frage6:       radio('frage6'),
+    frage6_andere: (radio('frage6') === 'Andere' && frage6AndereText) ? frage6AndereText.value.trim() : '',
     bemerkungen:  document.getElementById('bemerkungen').value.trim(),
     timestamp:    new Date().toISOString(),
   };
@@ -206,6 +226,7 @@ if (form) {
           frage5:        (data.frage5 || []).join(', '),
           frage5_andere: data.frage5_andere,
           frage6:        data.frage6,
+          frage6_andere: data.frage6_andere,
           bemerkungen:   data.bemerkungen,
         }),
       });
