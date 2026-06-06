@@ -762,6 +762,69 @@ body.admin-page { background: var(--gray-100); }
 .chart-noanswer { font-size: 13px; color: var(--gray-500); padding: 20px 0; text-align: center; }
 .charts-empty { font-size: 14px; color: var(--gray-500); }
 
+/* Gewinner ziehen */
+.draw-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+.draw-name, .draw-count {
+  padding: 10px 12px;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  transition: border-color var(--ease);
+}
+.draw-name { flex: 1; min-width: 0; }
+.draw-count { width: 80px; text-align: center; }
+.draw-name:focus, .draw-count:focus { border-color: var(--red); }
+.draw-del {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  border: 2px solid var(--gray-200);
+  background: var(--white);
+  border-radius: var(--radius);
+  font-size: 20px; line-height: 1;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: all var(--ease);
+}
+.draw-del:hover { border-color: var(--red); color: var(--red); }
+
+#drawResult { margin-top: 18px; }
+.draw-summary { font-size: 12px; color: var(--gray-500); margin-bottom: 14px; }
+.winner-group {
+  border: 1.5px solid var(--gray-200);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.winner-group h3 { font-size: 15px; font-weight: 700; color: var(--black); margin-bottom: 10px; }
+.winner-badge {
+  display: inline-block;
+  background: var(--red); color: var(--white);
+  font-size: 12px; font-weight: 700;
+  padding: 1px 9px; border-radius: 20px; margin-left: 6px;
+}
+.winner-list { list-style: none; counter-reset: w; padding: 0; margin: 0; }
+.winner-list li {
+  counter-increment: w;
+  display: flex; flex-direction: column;
+  padding: 8px 0 8px 30px; position: relative;
+  border-top: 1px solid var(--gray-100);
+}
+.winner-list li:first-child { border-top: 0; }
+.winner-list li::before {
+  content: counter(w);
+  position: absolute; left: 0; top: 8px;
+  width: 20px; height: 20px;
+  background: var(--gray-100); color: var(--gray-700);
+  border-radius: 50%; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.winner-name { font-size: 15px; font-weight: 600; color: var(--black); }
+.winner-contact { font-size: 12px; color: var(--gray-500); }
+.draw-warn { font-size: 13px; color: var(--red-dark); margin-top: 6px; }
+
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .data-table {

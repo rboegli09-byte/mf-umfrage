@@ -343,6 +343,96 @@ function logout() {
   loginCard.classList.remove('hidden');
 }
 
+// ── Gewinner-Zufallsgenerator ─────────────────────────────────
+const DEFAULT_PRIZES = [
+  { name: 'Hauptpreis: Reise ins MF-Werk', count: 1 },
+  { name: '3 Tage MF Probefahren',          count: 3 },
+  { name: 'MF Cap',                          count: 10 },
+];
+
+function makeDrawRow(name, count) {
+  const row = document.createElement('div');
+  row.className = 'draw-row';
+  row.innerHTML =
+    '<input type="text" class="draw-name" placeholder="Preis">' +
+    '<input type="number" class="draw-count" min="0" step="1">' +
+    '<button type="button" class="draw-del" title="Entfernen">&times;</button>';
+  row.querySelector('.draw-name').value = name;
+  row.querySelector('.draw-count').value = count;
+  row.querySelector('.draw-del').addEventListener('click', () => row.remove());
+  return row;
+}
+
+function renderDrawRows(prizes) {
+  const wrap = document.getElementById('drawRows');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  prizes.forEach(p => wrap.appendChild(makeDrawRow(p.name, p.count)));
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function zieheGewinner() {
+  const result = document.getElementById('drawResult');
+  if (!result) return;
+
+  if (currentRows.length === 0) {
+    result.innerHTML = '<p class="draw-warn">Es sind noch keine Teilnehmer vorhanden.</p>';
+    return;
+  }
+
+  const prizes = [...document.querySelectorAll('#drawRows .draw-row')].map(r => ({
+    name:  r.querySelector('.draw-name').value.trim() || 'Preis',
+    count: Math.max(0, parseInt(r.querySelector('.draw-count').value, 10) || 0),
+  })).filter(p => p.count > 0);
+
+  if (prizes.length === 0) {
+    result.innerHTML = '<p class="draw-warn">Bitte mindestens einen Preis mit Anzahl &gt; 0 angeben.</p>';
+    return;
+  }
+
+  const totalNeeded = prizes.reduce((s, p) => s + p.count, 0);
+  const pool = shuffle(currentRows);   // zufällige Reihenfolge, jeder nur einmal
+  let idx = 0, html = '';
+
+  prizes.forEach(prize => {
+    html += '<div class="winner-group"><h3>' + escapeHtml(prize.name) +
+            ' <span class="winner-badge">' + prize.count + '</span></h3>';
+    const winners = [];
+    for (let k = 0; k < prize.count && idx < pool.length; k++, idx++) winners.push(pool[idx]);
+
+    if (winners.length === 0) {
+      html += '<p class="draw-warn">Keine Teilnehmer mehr übrig.</p>';
+    } else {
+      html += '<ol class="winner-list">';
+      winners.forEach(w => {
+        const name = ((w.vorname || '') + ' ' + (w.nachname || '')).trim() || '(ohne Name)';
+        const kontakt = [w.email, w.telefon].filter(Boolean).map(escapeHtml).join(' · ');
+        html += '<li><span class="winner-name">' + escapeHtml(name) + '</span>' +
+                '<span class="winner-contact">' + kontakt + '</span></li>';
+      });
+      html += '</ol>';
+      if (winners.length < prize.count)
+        html += '<p class="draw-warn">Nur ' + winners.length + ' von ' + prize.count +
+                ' vergeben – zu wenige Teilnehmer.</p>';
+    }
+    html += '</div>';
+  });
+
+  const summary = '<div class="draw-summary">Gezogen am ' + new Date().toLocaleString('de-CH') +
+    ' &middot; ' + currentRows.length + ' Teilnehmer &middot; ' +
+    Math.min(totalNeeded, pool.length) + ' Gewinner</div>';
+  result.innerHTML = summary + html;
+  result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 // ── Event-Listener ────────────────────────────────────────────
 loginBtn.addEventListener('click', login);
 tokenInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
@@ -351,9 +441,13 @@ document.getElementById('btnCsv').addEventListener('click', exportCsv);
 document.getElementById('btnRefresh').addEventListener('click', refresh);
 document.getElementById('btnClear').addEventListener('click', alleLoeschen);
 document.getElementById('btnLogout').addEventListener('click', logout);
+document.getElementById('btnDraw').addEventListener('click', zieheGewinner);
+document.getElementById('btnAddPrize').addEventListener('click',
+  () => document.getElementById('drawRows').appendChild(makeDrawRow('', 1)));
 
 // Auto-Login, falls Passwort in dieser Session vorhanden
 window.addEventListener('DOMContentLoaded', () => {
+  renderDrawRows(DEFAULT_PRIZES);
   const saved = sessionStorage.getItem('mf_admin_pw');
   if (saved) { tokenInput.value = saved; login(); }
 });
