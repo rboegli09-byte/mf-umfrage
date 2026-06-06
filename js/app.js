@@ -249,6 +249,16 @@ if (form) {
 
       if (!res.ok) {
         const txt = await res.text().catch(() => '');
+        // E-Mail bereits verwendet (Unique-Verletzung)
+        if (res.status === 409 || txt.includes('23505') || /duplicate key|unique/i.test(txt)) {
+          setLoading(false);
+          const emailEl = document.getElementById('email');
+          emailEl.classList.add('is-error');
+          showError('err-email',
+            'Diese E-Mail-Adresse wurde bereits verwendet. Pro Person ist nur eine Teilnahme möglich.');
+          document.getElementById('err-email').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
         throw new Error('Server-Antwort ' + res.status + ' ' + txt);
       }
 

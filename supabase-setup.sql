@@ -31,6 +31,10 @@ create table if not exists public.antworten (
   bemerkungen   text
 );
 
+-- 1b) Jede E-Mail nur einmal zulassen (Gross-/Kleinschreibung egal)
+create unique index if not exists antworten_email_unique
+  on public.antworten (lower(email));
+
 -- 2) Row Level Security aktivieren
 alter table public.antworten enable row level security;
 
