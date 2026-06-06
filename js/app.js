@@ -124,10 +124,10 @@ function validate() {
 
   // Radio-Fragen
   const radioFragen = ['frage1','frage2','frage3','frage4'];
-  radioFragen.forEach((name, i) => {
+  radioFragen.forEach(name => {
     const checked = document.querySelector(`input[name="${name}"]:checked`);
     if (!checked) {
-      showError('err-' + name, `Bitte beantworten Sie Frage ${i + 1}.`);
+      showError('err-' + name, 'Bitte beantworten Sie diese Frage.');
       ok = false;
     }
   });
@@ -142,7 +142,7 @@ function validate() {
   // Frage 6 (Pflicht, Einfachauswahl)
   const f6 = document.querySelector('input[name="frage6"]:checked');
   if (!f6) {
-    showError('err-frage6', 'Bitte beantworten Sie Frage 6.');
+    showError('err-frage6', 'Bitte beantworten Sie diese Frage.');
     ok = false;
   } else if (f6.value === 'Andere' && !frage6AndereText.value.trim()) {
     showError('err-frage6', 'Bitte geben Sie an, welchen MF Sie gerne probefahren würden.');

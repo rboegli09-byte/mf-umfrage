@@ -86,8 +86,9 @@
           </div>
         </div>
 
-        <!-- ── PROBEFAHRT ── -->
+        <!-- ── FRAGE 1: PROBEFAHRT ── -->
         <div class="form-section">
+          <div class="question-number">1</div>
           <h2 class="question-text">
             Welchen Traktor sind Sie Probe gefahren?
           </h2>
@@ -106,64 +107,9 @@
           <span class="field-error" id="err-traktor"></span>
         </div>
 
-        <!-- ── LANDWIRT ── -->
+        <!-- ── FRAGE 2 ── -->
         <div class="form-section">
-          <h2 class="question-text">
-            Bist du Landwirt?
-          </h2>
-          <div class="radio-group" id="grp-landwirt">
-            <label class="radio-option">
-              <input type="radio" name="landwirt" value="Ja">
-              <span class="radio-dot"></span>
-              <span class="radio-label">Ja</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="landwirt" value="Nein">
-              <span class="radio-dot"></span>
-              <span class="radio-label">Nein</span>
-            </label>
-          </div>
-          <span class="field-error" id="err-landwirt"></span>
-        </div>
-
-        <!-- ── ANSCHAFFUNG ── -->
-        <div class="form-section">
-          <h2 class="question-text">
-            Wann planst du die Anschaffung einer Maschine oder eines Traktors?
-          </h2>
-          <div class="radio-group" id="grp-anschaffung">
-            <label class="radio-option">
-              <input type="radio" name="anschaffung" value="2026">
-              <span class="radio-dot"></span>
-              <span class="radio-label">2026</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="anschaffung" value="2027">
-              <span class="radio-dot"></span>
-              <span class="radio-label">2027</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="anschaffung" value="2028">
-              <span class="radio-dot"></span>
-              <span class="radio-label">2028</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="anschaffung" value="später">
-              <span class="radio-dot"></span>
-              <span class="radio-label">später</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="anschaffung" value="unentschlossen">
-              <span class="radio-dot"></span>
-              <span class="radio-label">unentschlossen</span>
-            </label>
-          </div>
-          <span class="field-error" id="err-anschaffung"></span>
-        </div>
-
-        <!-- ── FRAGE 1 ── -->
-        <div class="form-section">
-          <div class="question-number">1</div>
+          <div class="question-number">2</div>
           <h2 class="question-text">
             Wie beurteilen Sie die Übersichtlichkeit der Bedienelemente im Fahrerstand?
           </h2>
@@ -199,7 +145,7 @@
 
         <!-- ── FRAGE 2 ── -->
         <div class="form-section">
-          <div class="question-number">2</div>
+          <div class="question-number">3</div>
           <h2 class="question-text">
             Wie schnell haben Sie sich mit der Bedienung des Traktors vertraut gefühlt?
           </h2>
@@ -230,7 +176,7 @@
 
         <!-- ── FRAGE 3 ── -->
         <div class="form-section">
-          <div class="question-number">3</div>
+          <div class="question-number">4</div>
           <h2 class="question-text">
             Wie bewerten Sie das Handling des Traktors bei täglichen Arbeiten
             (Manövrieren, Wenden, Anbaugeräte bedienen)?
@@ -267,7 +213,7 @@
 
         <!-- ── FRAGE 4 ── -->
         <div class="form-section">
-          <div class="question-number">4</div>
+          <div class="question-number">5</div>
           <h2 class="question-text">
             Wie zufrieden sind Sie mit der Übersicht aus der Kabine auf
             Anbaugeräte und Arbeitsumgebung?
@@ -304,7 +250,7 @@
 
         <!-- ── FRAGE 5 (Mehrfach) ── -->
         <div class="form-section">
-          <div class="question-number">5</div>
+          <div class="question-number">6</div>
           <h2 class="question-text">
             Welche Gefühle löst das Fahren des MF 6S.180 bei Ihnen aus?
           </h2>
@@ -367,7 +313,7 @@
 
         <!-- ── FRAGE 6 ── -->
         <div class="form-section">
-          <div class="question-number">6</div>
+          <div class="question-number">7</div>
           <h2 class="question-text">
             Welchen MF würdest du gerne Probefahren?
           </h2>
@@ -401,6 +347,63 @@
           <input type="text" id="frage6-andere-text" class="andere-input hidden"
                  placeholder="Welchen MF würden Sie gerne probefahren?">
           <span class="field-error" id="err-frage6"></span>
+        </div>
+
+        <!-- ── FRAGE 8: LANDWIRT ── -->
+        <div class="form-section">
+          <div class="question-number">8</div>
+          <h2 class="question-text">
+            Bist du Landwirt?
+          </h2>
+          <div class="radio-group" id="grp-landwirt">
+            <label class="radio-option">
+              <input type="radio" name="landwirt" value="Ja">
+              <span class="radio-dot"></span>
+              <span class="radio-label">Ja</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="landwirt" value="Nein">
+              <span class="radio-dot"></span>
+              <span class="radio-label">Nein</span>
+            </label>
+          </div>
+          <span class="field-error" id="err-landwirt"></span>
+        </div>
+
+        <!-- ── FRAGE 9: ANSCHAFFUNG ── -->
+        <div class="form-section">
+          <div class="question-number">9</div>
+          <h2 class="question-text">
+            Wann planst du die Anschaffung einer Maschine oder eines Traktors?
+          </h2>
+          <div class="radio-group" id="grp-anschaffung">
+            <label class="radio-option">
+              <input type="radio" name="anschaffung" value="2026">
+              <span class="radio-dot"></span>
+              <span class="radio-label">2026</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="anschaffung" value="2027">
+              <span class="radio-dot"></span>
+              <span class="radio-label">2027</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="anschaffung" value="2028">
+              <span class="radio-dot"></span>
+              <span class="radio-label">2028</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="anschaffung" value="später">
+              <span class="radio-dot"></span>
+              <span class="radio-label">später</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="anschaffung" value="unentschlossen">
+              <span class="radio-dot"></span>
+              <span class="radio-label">unentschlossen</span>
+            </label>
+          </div>
+          <span class="field-error" id="err-anschaffung"></span>
         </div>
 
         <!-- ── BEMERKUNGEN ── -->
@@ -456,7 +459,7 @@
     </div>
   </main>
 
-  <script src="js/config.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
 </body>
 </html>

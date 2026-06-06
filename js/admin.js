@@ -12,24 +12,24 @@ let chartInstances = [];  // aktive Chart.js-Diagramme (zum Aufräumen)
 
 // Fragen mit fester Antwort-Reihenfolge für die Diagramme
 const STAT_FRAGEN = [
-  { key:'traktor', titel:'Probe gefahrener Traktor', multi:false,
+  { key:'traktor', titel:'Frage 1: Probe gefahrener Traktor', multi:false,
     optionen:['MF 4710','MF 6S.180 Dyna-VT'] },
-  { key:'landwirt', titel:'Bist du Landwirt?', multi:false,
-    optionen:['Ja','Nein'] },
-  { key:'anschaffung', titel:'Geplante Anschaffung', multi:false,
-    optionen:['2026','2027','2028','später','unentschlossen'] },
-  { key:'frage1', titel:'Frage 1: Übersichtlichkeit Bedienelemente', multi:false,
+  { key:'frage1', titel:'Frage 2: Übersichtlichkeit Bedienelemente', multi:false,
     optionen:['Sehr gut','Gut','Mittel','Schlecht','Sehr schlecht'] },
-  { key:'frage2', titel:'Frage 2: Vertrautheit mit Bedienung', multi:false,
+  { key:'frage2', titel:'Frage 3: Vertrautheit mit Bedienung', multi:false,
     optionen:['Sofort','Nach kurzer Einweisung','Eher schwierig','Sehr schwierig'] },
-  { key:'frage3', titel:'Frage 3: Handling tägliche Arbeiten', multi:false,
+  { key:'frage3', titel:'Frage 4: Handling tägliche Arbeiten', multi:false,
     optionen:['Sehr einfach','Einfach','Durchschnittlich','Eher kompliziert','Sehr kompliziert'] },
-  { key:'frage4', titel:'Frage 4: Übersicht aus Kabine', multi:false,
+  { key:'frage4', titel:'Frage 5: Übersicht aus Kabine', multi:false,
     optionen:['Sehr zufrieden','Zufrieden','Neutral','Unzufrieden','Sehr unzufrieden'] },
-  { key:'frage5', titel:'Frage 5: Gefühle (Mehrfachauswahl)', multi:true,
+  { key:'frage5', titel:'Frage 6: Gefühle (Mehrfachauswahl)', multi:true,
     optionen:['Stolz','Vertrauen','Freude','Gleichgültigkeit','Unsicherheit','Frust'] },
-  { key:'frage6', titel:'Frage 6: Welchen MF gerne probefahren', multi:false,
+  { key:'frage6', titel:'Frage 7: Welchen MF gerne probefahren', multi:false,
     optionen:['5M Serie','5S Serie','6S Serie','7S Serie','Andere'] },
+  { key:'landwirt', titel:'Frage 8: Bist du Landwirt?', multi:false,
+    optionen:['Ja','Nein'] },
+  { key:'anschaffung', titel:'Frage 9: Geplante Anschaffung', multi:false,
+    optionen:['2026','2027','2028','später','unentschlossen'] },
 ];
 
 // Farbpalette (MF-Stil: Rot-Töne, Grau, Schwarz)
@@ -79,8 +79,6 @@ function toRow(a) {
     a.telefon || '',
     a.email || '',
     a.traktor || '',
-    a.landwirt || '',
-    a.anschaffung || '',
     a.frage1 || '',
     a.frage2 || '',
     a.frage3 || '',
@@ -89,6 +87,8 @@ function toRow(a) {
     a.frage5_andere || '',
     a.frage6 || '',
     a.frage6_andere || '',
+    a.landwirt || '',
+    a.anschaffung || '',
     a.bemerkungen || '',
   ];
 }
